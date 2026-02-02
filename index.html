@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-pkgs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #FFFFFF;
+            color: #1D1D28;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-weight: 400;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2rem;
+            position: relative;
+            background: #FFFFFF;
+        }
+        
+        .slide:nth-child(even) {
+            background: #F5F5FF;
+        }
+        
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #7878EF;
+            line-height: 1.1;
+        }
+        
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1D1D28;
+        }
+        
+        h3 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #5C5CCF;
+        }
+        
+        .content {
+            max-width: 80vw;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            justify-items: center;
+        }
+        
+        .stat-card {
+            background: #F5F5FF;
+            border: 2px solid #DCDCE0;
+            border-radius: 24px;
+            padding: 2rem 1.5rem;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            max-width: 300px;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(120, 120, 239, 0.15);
+            border-color: #BBBBFF;
+        }
+        
+        .slide:nth-child(odd) .stat-card {
+            background: #FFFFFF;
+        }
+        
+        .big-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #45E56E;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .percentage {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FF807D;
+        }
+        
+        ul {
+            list-style: none;
+            text-align: left;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        li {
+            margin: 0.8rem 0;
+            padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+            position: relative;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            background: #F5F5FF;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        li:hover {
+            background: #DCDCE0;
+            transform: translateX(8px);
+        }
+        
+        .slide:nth-child(even) li {
+            background: #FFFFFF;
+        }
+        
+        .slide:nth-child(even) li:hover {
+            background: #F5F5FF;
+        }
+        
+        li:before {
+            content: "→";
+            position: absolute;
+            left: 0.8rem;
+            color: #45E56E;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        
+        .highlight {
+            color: #7878EF;
+            font-weight: 700;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            color: #4C4C61;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        
+        .slide-logo {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            width: 48px;
+            height: 48px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .slide-logo:hover {
+            opacity: 1;
+        }
+        
+        .intro-slide p {
+            font-size: 1.8rem;
+            line-height: 1.8;
+            color: #4C4C61;
+            max-width: 900px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+        
+        p {
+            font-size: 1.6rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+        }
+        
+        .top-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .top-item {
+            background: #F5F5FF;
+            border: 2px solid #BBBBFF;
+            border-radius: 24px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .top-item:hover {
+            background: #BBBBFF;
+            transform: scale(1.02);
+        }
+        
+        .domain {
+            color: #7878EF;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .domain:hover {
+            text-decoration: underline;
+            color: #5C5CCF;
+        }
+        
+        .nav-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #4C4C61;
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+            background: #F5F5FF;
+            padding: 0.5rem 1.5rem;
+            border-radius: 24px;
+            border: 1px solid #DCDCE0;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .divider {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #7878EF, #45E56E);
+            margin: 3rem auto;
+            border-radius: 2px;
+        }
+        
+        .stat-card span:not(.big-number):not(.percentage) {
+            color: #4C4C61;
+            font-weight: 400;
+            font-size: 1.3rem;
+        }
+        
+        .top-item span strong {
+            color: #1D1D28;
+            font-weight: 900;
+        }
+        
+        a {
+            transition: all 0.2s ease;
+        }
+        
+        .reload-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #45E56E;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 24px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .reload-indicator.show {
+            opacity: 1;
+        }
+        
+        .slide-image {
+            max-width: 95%;
+            max-height: 75vh;
+            margin: 2rem auto;
+            display: block;
+            border-radius: 16px;
+        }
+        
+        .slide-image[src="treemap.svg"],
+        .slide-image[src="treemap-80percent.svg"] {
+            border-radius: 0;
+        }
+        
+        .code-block {
+            background: #1D1D28;
+            color: #F5F5FF;
+            padding: 2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin: 2rem auto;
+            max-width: 90%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            box-shadow: 0 8px 32px rgba(29, 29, 40, 0.15);
+            border: 2px solid #7878EF;
+            text-align: left;
+        }
+        
+        .code-block code {
+            color: #F5F5FF;
+            background: none;
+            padding: 0;
+            font-size: inherit;
+            text-align: left;
+            white-space: pre;
+        }
+
+        /* Terminal output slides */
+        .terminal-slide .content {
+            max-width: 90vw;
+        }
+
+        .terminal-slide .code-block {
+            font-size: 1.3rem;
+            width: 80vw;
+            max-width: 80vw;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .terminal-prompt {
+            color: #45E56E;
+        }
+        
+        /* Pop Quiz Warning Slide Styles */
+        .pop-quiz-warning {
+            background: #FF807D !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pop-quiz-warning .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .pop-quiz-warning h1 {
+            color: #FFFFFF;
+            font-size: clamp(3rem, 7vw, 5rem);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .pop-quiz-warning .divider {
+            background: linear-gradient(90deg, #FFFFFF, #FFE0DF);
+        }
+        
+        .pop-quiz-warning p {
+            color: #FFFFFF;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pop-quiz-warning .slide-number {
+            color: #FFFFFF;
+        }
+        
+        .pop-quiz-warning .slide-logo {
+            filter: brightness(0) invert(1);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem 1rem;
+            }
+            
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-list {
+                grid-template-columns: 1fr;
+            }
+            
+            li {
+                padding-left: 2.5rem;
+            }
+        }
+        
+        @media print {
+            /* Hide navigation hints and interactive elements */
+            .nav-hint,
+            .reload-indicator {
+                display: none !important;
+            }
+            
+            /* Ensure each slide takes exactly one page */
+            .slide {
+                page-break-after: always;
+                page-break-inside: avoid;
+                height: 100vh;
+                width: 100vw;
+                margin: 0;
+                padding: 3rem 2rem;
+            }
+            
+            /* Remove hover effects and transitions */
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+            
+            /* Ensure backgrounds print properly */
+            body,
+            .slide {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            /* Fix stat card hover states */
+            .stat-card:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+            
+            /* Fix list item hover states */
+            li:hover {
+                transform: none !important;
+                background: inherit !important;
+            }
+            
+            /* Slightly reduce list font size for better fit */
+            li {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.5rem 0.5rem 2rem;
+                margin: 0.5rem 0;
+            }
+            
+            /* Reduce heading sizes for print */
+            h1 {
+                font-size: clamp(2rem, 5vw, 3.2rem);
+            }
+            
+            h2 {
+                font-size: clamp(1.6rem, 4vw, 2.4rem);
+            }
+            
+            h3 {
+                font-size: clamp(1rem, 2.5vw, 1.5rem);
+            }
+            
+            /* Hide slide numbers and logos */
+            .slide-number,
+            .slide-logo {
+                display: none !important;
+            }
+            
+            /* Remove any scrollbars */
+            body {
+                overflow: hidden !important;
+            }
+            
+            /* Ensure pop quiz warning prints with background */
+            .pop-quiz-warning {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide intro-slide">
+        <div class="content">
+            <h1>git-pkgs</h1>
+            <div class="divider"></div>
+            <p>A git subcommand that indexes your dependency history into a local SQLite database, then lets you query it like git history.</p>
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ brew tap git-pkgs/git-pkgs &amp;&amp; brew install git-pkgs</span>
+
+<span class="terminal-prompt">$ go install github.com/git-pkgs/git-pkgs@latest</span>
+
+<span class="terminal-prompt">$ git pkgs --version</span>
+git-pkgs version 0.11.4
+         commit faefea598fe88271224c668ca0b46716bbaf2dc7
+         date 2026-01-31T21:25:27Z</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">1/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs help</span>
+
+Available Commands:
+  add         Add a dependency
+  bisect      Find the commit that introduced a dependency-related change
+  blame       Show who added each dependency
+  browse      Open installed package source in editor
+  diff        Compare dependencies between commits or working tree
+  ecosystems  List supported ecosystems
+  history     Show history of dependency changes
+  info        Show database information
+  init        Initialize git-pkgs database for this repository
+  licenses    Show license information for dependencies
+  list        List dependencies at a commit
+  log         List commits with dependency changes
+  outdated    Find packages with newer versions available
+  sbom        Generate Software Bill of Materials
+  search      Find dependencies matching a pattern
+  show        Show dependency changes in a commit
+  stats       Show dependency statistics
+  tree        Display dependencies as a tree
+  vulns       Vulnerability scanning commands
+  where       Find where a package is declared
+  why         Show why a dependency was added</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">2/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs ecosystems</span>
+Ecosystem   Manifest         Lockfiles                          Managers        Registry
+cargo       Cargo.toml       Cargo.lock                         cargo           yes
+composer    composer.json    composer.lock                      composer        yes
+gem         Gemfile          Gemfile.lock                       bundler         yes
+hex         mix.exs          mix.lock                           mix             yes
+npm         package.json     package-lock.json, yarn.lock...    npm, yarn...    yes
+pypi        pyproject.toml   uv.lock, poetry.lock               uv, poetry      yes
+pub         pubspec.yaml     pubspec.lock                       pub             yes
+cocoapods   Podfile          Podfile.lock                       cocoapods       yes
+maven       pom.xml          gradle.lockfile                    maven, gradle   yes
+nuget       packages.config  packages.lock.json                 nuget           yes
+cpan        cpanfile         cpanfile.snapshot                  cpanm           yes
+crystal     shard.yml        shard.lock                         shards          no
+swift       Package.swift    Package.resolved                   swift           no
+nix         flake.nix        flake.lock                         nix             no
+cran        DESCRIPTION      renv.lock                          renv            yes
+julia       Project.toml     Manifest.toml                      pkg             yes
+golang      go.mod                                              gomod           yes
+deno        deno.json        deno.lock                          deno            yes
+conda       environment.yml                                     conda           yes
+docker                                                                          no
+...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">3/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs init &amp;&amp; git pkgs info</span>
+Database Info
+========================================
+
+Location: /Users/andrew/code/octobox/.git/pkgs.sqlite3
+Size: 10.3 MB
+Schema version: 7
+
+Branch: master
+Last analyzed: 7825978
+
+Row Counts
+----------------------------------------
+  Branches                        1
+  Commits                      5237
+  Branch-Commits               5237
+  Manifests                       9
+  Dependency Changes           4775
+  Dependency Snapshots        17932
+  ----------------------------------
+  Total                       33191
+
+Ecosystems: docker, gem, github-actions</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">4/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs stats</span>
+Branch: master
+Commits analyzed: 5237
+Commits with changes: 2545
+
+Current Dependencies: 246
+  gem: 226, github-actions: 16, docker: 4
+
+Dependency Changes: 4775
+  added: 399, modified: 4223, removed: 153
+
+Most Changed Dependencies
+  rails: 133, pagy: 116, autoprefixer-rails: 109
+  oj: 90, skylight: 87, nokogiri: 85, puma: 74
+
+Top Contributors
+  dependabot[bot]: 2816 changes
+  Andrew Nesbitt: 1282 changes
+  dependabot-preview[bot]: 467 changes
+  Mark Tareshawty: 64 changes</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">5/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs list --ecosystem=gem</span>
+Gemfile (gem):
+  active_record_query_trace [development]
+  attr_encrypted https://github.com/octobox/attr_encrypted.git
+  benchmark
+  better_errors [development]
+  bootsnap
+  bootstrap 4.6.2
+  brakeman [development]
+  bugsnag
+  commonmarker 2.6.2
+  dotenv-rails [development]
+  factory_bot [test]
+  faraday &gt;= 2
+  faraday-gzip
+  faraday-retry
+  gemoji &lt;4
+  jbuilder
+  jquery-rails
+  jwt
+  listen [development]
+  local_time 2.1.0
+  ...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">6/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs tree --ecosystem=gem</span>
+Gemfile (gem)
+├── development
+│   ├── active_record_query_trace
+│   ├── better_errors
+│   ├── brakeman
+│   ├── dotenv-rails
+│   ├── listen
+│   ├── rails-controller-testing
+│   ├── spring
+│   ├── sql_queries_count
+│   └── web-console
+├── runtime
+│   ├── attr_encrypted https://github.com/octobox/attr_encrypted.git
+│   ├── bootsnap
+│   ├── bootstrap 4.6.2
+│   ├── bugsnag
+│   ├── commonmarker 2.6.2
+│   ├── faraday &gt;= 2
+│   ├── jbuilder
+│   ├── jquery-rails
+│   └── ...
+└── test
+    ├── factory_bot
+    ├── mocha
+    └── webmock</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">7/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs search rails</span>
+autoprefixer-rails              10.4.21.0  (gem)
+  First seen: 2016-12-16  Last changed: 2025-04-14
+dotenv-rails                    3.2.0  (gem)
+  First seen: 2016-12-16  Last changed: 2025-12-08
+jquery-rails                    4.6.1  (gem)
+  First seen: 2016-12-16  Last changed: 2025-10-22
+omniauth-rails_csrf_protection  2.0.1  (gem)
+  First seen: 2021-11-02  Last changed: 2025-12-11
+rails                           8.1.2  (gem)
+  First seen: 2016-12-16  Last changed: 2026-01-15
+rails-controller-testing        1.0.5  (gem)
+  First seen: 2016-12-16  Last changed: 2019-02-08
+rails-dom-testing               2.3.0  (gem)
+  First seen: 2016-12-16  Last changed: 2025-12-11
+rails-html-sanitizer            1.6.2  (gem)
+  First seen: 2016-12-16  Last changed: 2025-12-11
+railties                        8.1.2  (gem)
+  First seen: 2016-12-16  Last changed: 2026-01-15</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">8/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs show e323669</span>
+Gemfile.lock:
+  ~ active_record_query_trace 1.6.1 -&gt; 1.9
+  ~ brakeman 7.1.2 -&gt; 8.0.1
+  ~ bugsnag 6.28.0 -&gt; 6.29.0
+  ~ prism 1.8.0 -&gt; 1.9.0
+  ~ puma 7.1.0 -&gt; 7.2.0
+  ~ redis-client 0.26.3 -&gt; 0.26.4</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">9/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs history rails</span>
+History for rails:
+
+2016-12-16 Added 5.0.0.1
+  Package: rails (gem)
+  Commit: e323669 Hello World
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+
+2016-12-16 Added 6.5.3.1
+  Package: autoprefixer-rails (gem)
+  Commit: e323669 Hello World
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+
+2016-12-16 Added 2.1.1
+  Package: dotenv-rails (gem)
+  Commit: e323669 Hello World
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+
+2016-12-16 Added 4.2.1
+  Package: jquery-rails (gem)
+  Commit: e323669 Hello World
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">10/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs log</span>
+7825978 Ignore .gitattributes
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+  Date:   2026-01-31
+  Changes: ~6
+
+cb3e017 build(deps): Bump commonmarker from 2.6.1 to 2.6.2
+  Author: dependabot[bot]
+  Date:   2026-01-20
+  Changes: ~2
+
+d8d8666 build(deps): Bump github/codeql-action from 3.31.10 to 4...
+  Author: dependabot[bot]
+  Date:   2026-01-20
+  Changes: ~3
+
+9bd74ac Add zizmor workflow and fix security findings
+  Author: Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+  Date:   2026-01-19
+  Changes: +2 ~11
+
+f51f866 build(deps-dev): Bump listen from 3.9.0 to 3.10.0
+  Author: dependabot[bot]
+  Date:   2026-01-19
+  Changes: ~1</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">11/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs why rails</span>
+rails was added in commit e323669
+Date:     2016-12-16
+Author:   Andrew Nesbitt &lt;andrewnez@gmail.com&gt;
+Manifest: Gemfile
+
+<span class="terminal-prompt">$ git pkgs where dotenv-rails</span>
+Gemfile:48:  gem &#039;dotenv-rails&#039;
+Gemfile.lock:126:    dotenv-rails (3.2.0)
+
+<span class="terminal-prompt">$ git pkgs browse rails</span>
+Opening /Users/andrew/.gem/ruby/3.3.0/gems/rails-8.1.2...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">12/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs blame</span>
+.github/workflows/ci.yml (github-actions):
+  actions/checkout                Andrew Nesbitt  2021-04-05  a83996d
+  actions/setup-node              Andrew Nesbitt  2021-04-05  a83996d
+  docker://postgres               Andrew Nesbitt  2021-04-05  a83996d
+  docker://redis                  Andrew Nesbitt  2021-04-05  a83996d
+  ruby/setup-ruby                 Andrew Nesbitt  2021-04-05  a83996d
+
+.github/workflows/codeql-analysis.yml (github-actions):
+  actions/checkout                Andrew Nesbitt  2021-11-09  464afc8
+  github/codeql-action/analyze    Andrew Nesbitt  2021-11-09  464afc8
+  github/codeql-action/autobuild  Andrew Nesbitt  2021-11-09  464afc8
+  github/codeql-action/init       Andrew Nesbitt  2021-11-09  464afc8
+
+.github/workflows/docker-build.yml (github-actions):
+  actions/checkout                Andrew Nesbitt  2025-07-28  ed1b8d2
+
+.github/workflows/publish.yml (github-actions):
+  actions/checkout                Andrew Nesbitt  2023-04-18  e0a5436
+  docker/build-push-action        Andrew Nesbitt  2023-04-18  e0a5436
+  docker/login-action             Andrew Nesbitt  2023-04-18  e0a5436
+  docker/metadata-action          Andrew Nesbitt  2023-04-18  e0a5436</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">13/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs outdated</span>
+Found 10 outdated dependencies:
+
+Major updates:
+  attr_encrypted 3.1.0 -&gt; 4.2.0
+  local_time 2.1.0 -&gt; 3.0.2
+  popper_js 1.16.1 -&gt; 2.11.8
+  bootstrap 4.6.2 -&gt; 5.3.8
+  gemoji 3.0.1 -&gt; 4.1.0
+
+Minor updates:
+  ethon 0.15.0 -&gt; 0.18.0
+  numerizer 0.1.1 -&gt; 0.2.0
+  octicons 19.20.0 -&gt; 19.21.2
+
+Patch updates:
+  rake-compiler-dock 1.11.0 -&gt; 1.11.1
+  commonmarker 2.6.2 -&gt; 2.6.3</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">14/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs licenses</span>
+actions/checkout (github-actions): MIT
+actions/setup-node (github-actions): MIT
+active_record_query_trace (gem): MIT
+attr_encrypted (gem): MIT
+benchmark (gem): Ruby
+better_errors (gem): MIT
+bootsnap (gem): MIT
+bootstrap (gem): MIT
+brakeman (gem): QPL-1.0
+bugsnag (gem): MIT
+commonmarker (gem): MIT
+docker/build-push-action (github-actions): Apache-2.0
+docker/login-action (github-actions): Apache-2.0
+docker/metadata-action (github-actions): Apache-2.0
+dotenv-rails (gem): MIT
+factory_bot (gem): MIT
+faraday (gem): MIT
+jbuilder (gem): MIT
+jwt (gem): MIT
+library/postgres (docker): Apache-2.0
+library/redis (docker): Apache-2.0
+...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">15/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs vulns scan</span>
+No vulnerabilities found.
+
+<span class="terminal-prompt">$ git pkgs vulns log</span>
+Vulnerability changes in 1 commits:
+
+edbc795 build(deps): Bump public_suffix from 7.0.0 to 7.0.2
+  + GHSA-g9jg-w8vm-g96v - action_text-trix@2.1.15 (low)</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">16/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs sbom</span>
+{
+  &quot;bomFormat&quot;: &quot;CycloneDX&quot;,
+  &quot;specVersion&quot;: &quot;1.5&quot;,
+  &quot;metadata&quot;: {
+    &quot;timestamp&quot;: &quot;2026-02-01T08:32:23Z&quot;,
+    &quot;tools&quot;: [{ &quot;vendor&quot;: &quot;git-pkgs&quot;, &quot;name&quot;: &quot;git-pkgs&quot; }],
+    &quot;component&quot;: { &quot;type&quot;: &quot;application&quot;, &quot;name&quot;: &quot;project&quot; }
+  },
+  &quot;components&quot;: [
+    {
+      &quot;type&quot;: &quot;library&quot;,
+      &quot;name&quot;: &quot;actions/checkout&quot;,
+      &quot;version&quot;: &quot;8e8c483db84b4bee98b60c0593521ed34d9990e8&quot;,
+      &quot;purl&quot;: &quot;pkg:githubactions/actions/checkout&quot;,
+      &quot;licenses&quot;: [{ &quot;id&quot;: &quot;MIT&quot; }]
+    },
+    {
+      &quot;type&quot;: &quot;library&quot;,
+      &quot;name&quot;: &quot;rails&quot;,
+      &quot;version&quot;: &quot;8.1.2&quot;,
+      &quot;purl&quot;: &quot;pkg:gem/rails@8.1.2&quot;,
+      &quot;licenses&quot;: [{ &quot;id&quot;: &quot;MIT&quot; }]
+    },
+    ...
+  ]
+}</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">17/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs bisect start HEAD v3.0.0</span>
+Bisecting: 847 dependency-changing commits between v3.0.0 and HEAD
+[a4b2c8d] build(deps): Bump rails from 6.1.4 to 6.1.5
+
+<span class="terminal-prompt">$ git pkgs bisect good</span>
+Bisecting: 423 commits left to test
+[f8e9d1a] build(deps): Bump nokogiri from 1.12.0 to 1.13.0
+
+<span class="terminal-prompt">$ git pkgs bisect bad</span>
+Bisecting: 211 commits left to test
+[c3a7b2e] build(deps): Bump puma from 5.3.0 to 5.4.0
+
+<span class="terminal-prompt">$ git pkgs bisect reset</span>
+Returning to HEAD at 7825978</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">18/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs add redis</span>
+Adding redis to Gemfile...
+Running bundle install...
+  Installing redis 5.4.0
+Added redis 5.4.0 to Gemfile.lock
+
+<span class="terminal-prompt">$ git pkgs update rails</span>
+Updating rails...
+  rails 8.1.1 -&gt; 8.1.2
+  actioncable 8.1.1 -&gt; 8.1.2
+  actionmailer 8.1.1 -&gt; 8.1.2
+  activerecord 8.1.1 -&gt; 8.1.2
+Updated 12 dependencies
+
+<span class="terminal-prompt">$ git pkgs remove unused-gem</span>
+Removing unused-gem from Gemfile...
+Removed unused-gem and 3 unused transitive dependencies</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">19/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ git pkgs schema</span>
+branch_commits
+--------------
+  id         INTEGER  PK
+  branch_id  INTEGER
+  commit_id  INTEGER
+  position   INTEGER
+
+branches
+--------
+  id                 INTEGER   PK
+  name               TEXT      NOT NULL
+  last_analyzed_sha  TEXT
+
+commits
+-------
+  id            INTEGER   PK
+  sha           TEXT      NOT NULL
+  message       TEXT
+  author_name   TEXT
+  author_email  TEXT
+  committed_at  DATETIME
+
+dependency_changes
+------------------
+  id           INTEGER  PK
+  commit_id    INTEGER
+  manifest_id  INTEGER
+  name         TEXT
+  change_type  TEXT
+  old_version  TEXT
+  new_version  TEXT
+...</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">20/25</span>
+    </div>
+
+    <div class="slide terminal-slide">
+        <div class="content">
+            <pre class="code-block language-terminal"><code><span class="terminal-prompt">$ sqlite3 .git/pkgs.sqlite3 &quot;SELECT name, COUNT(*)</span>
+  FROM dependency_changes GROUP BY name ORDER BY 2 DESC LIMIT 10;&quot;
+rails|133
+pagy|116
+autoprefixer-rails|109
+oj|90
+skylight|87
+nokogiri|85
+puma|74
+actioncable|72
+actionmailer|72
+actionpack|72</code></pre>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">21/25</span>
+    </div>
+
+    <div class="slide intro-slide">
+        <div class="content">
+            <h1>Go Modules</h1>
+            <ul>
+                <li>github.com/git-pkgs/managers - Wrapping package manager CLIs behind a common interface</li>
+                <li>github.com/git-pkgs/manifests - Parsing manifest and lockfiles</li>
+                <li>github.com/git-pkgs/purl - Package URL construction, parsing, and registry URL mapping</li>
+                <li>github.com/git-pkgs/registries - Fetching package metadata from registry APIs</li>
+                <li>github.com/git-pkgs/spdx - SPDX license expression parsing and normalization</li>
+                <li>github.com/git-pkgs/vers - Version range parsing and comparison per the VERS spec</li>
+            </ul>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">22/25</span>
+    </div>
+
+    <div class="slide intro-slide">
+        <div class="content">
+            <h1>Thanks!</h1>
+            <div class="divider"></div>
+            <p>git-pkgs.dev</p>
+            <p>github.com/git-pkgs/git-pkgs</p>
+            <p>andrew@ecosyste.ms</p>
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">23/25</span>
+    </div>
+
+    <div class="slide intro-slide">
+        <div class="content">
+            <h1>Coming soon...</h1>
+            <img src="forgejo2.png" alt="Forgejo integration" class="slide-image">
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">24/25</span>
+    </div>
+
+    <div class="slide">
+        <div class="content">
+            <img src="forgejo1.png" alt="Forgejo integration" class="slide-image">
+        </div>
+        <img src="favicon.png" alt="Logo" class="slide-logo">
+        <span class="slide-number">25/25</span>
+    </div>
+
+    <div class="nav-hint">Scroll or use arrow keys to navigate • Press F for fullscreen</div>
+    <div class="reload-indicator">Slides updated!</div>
+
+    <script>
+        // Fullscreen toggle
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+            
+            if (!document.fullscreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement &&
+                !document.msFullscreenElement) {
+                // Enter fullscreen
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const slides = document.querySelectorAll('.slide');
+            const currentSlide = Math.round(window.scrollY / window.innerHeight);
+            
+            if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (e.key === 'Escape') {
+                // Escape is handled automatically by browsers for fullscreen
+            } else if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < slides.length - 1) {
+                    slides[currentSlide + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    slides[currentSlide - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                slides[0].scrollIntoView({ behavior: 'smooth' });
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Hide nav hint after first interaction
+        let hasInteracted = false;
+        const hideNavHint = () => {
+            if (!hasInteracted) {
+                hasInteracted = true;
+                document.querySelector('.nav-hint').style.opacity = '0';
+                setTimeout(() => {
+                    document.querySelector('.nav-hint').style.display = 'none';
+                }, 500);
+            }
+        };
+
+        window.addEventListener('scroll', hideNavHint);
+        document.addEventListener('keydown', hideNavHint);
+        
+        // Auto-reload when file changes
+        let lastModified = 1769936845091;
+        setInterval(() => {
+            fetch('/check-update?t=' + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    if (data.modified > lastModified) {
+                        lastModified = data.modified;
+                        const indicator = document.querySelector('.reload-indicator');
+                        indicator.classList.add('show');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 500);
+                    }
+                })
+                .catch(() => {}); // Ignore errors when not using the server
+        }, 1000);
+    </script>
+</body>
+</html>
