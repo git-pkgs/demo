@@ -2,6 +2,8 @@
 
 15 minute live demo using octobox as the example repo.
 
+Pdf of slides: https://github.com/git-pkgs/demo/blob/main/git-pkgs.pdf
+
 ## Pre-flight (do before the talk)
 
 ```bash
