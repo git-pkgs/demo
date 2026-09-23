@@ -151,3 +151,7 @@ git pkgs schema
 sqlite3 .git/pkgs.sqlite3 "SELECT name, COUNT(*) FROM dependency_changes GROUP BY name ORDER BY 2 DESC LIMIT 15;"
 sqlite3 .git/pkgs.sqlite3 "SELECT change_type, COUNT(*) FROM dependency_changes WHERE name='rails' GROUP BY change_type;"
 ```
+
+## License
+
+[MIT](LICENSE).
